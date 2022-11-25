@@ -23,5 +23,10 @@ namespace gcgcg {
         {
             return base.ToString();
         }
+
+        public Ponto4D PontosPosicao(int index)
+        {
+        return pontosLista[index];
+        }
     }
 }

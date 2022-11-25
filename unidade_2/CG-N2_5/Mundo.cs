@@ -112,37 +112,44 @@ namespace gcgcg
       long inicio = 100;
     protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
     {
-
-      // if (e.Key == Key.E) {
-      //   camera.PanEsquerda();
-      // }
-      // else if (e.Key == Key.D) {
-      //   camera.PanDireita();
-      // }
-      // else if (e.Key == Key.C) {
-      //   camera.PanCima();
-      // }
-      // else if (e.Key == Key.B) {
-      //   camera.PanBaixo();
-      // }
       if (e.Key == Key.I) {
         if (camera.xmin <= -105 && camera.xmax >= 105 && camera.ymin <= -105 && camera.ymax >= 105) {
           camera.ZoomIn();
         }
       }
-      // else if (e.Key == Key.O) {
-      //   if (camera.xmin >= -300 && camera.xmax <= 300 && camera.ymin >= -300 && camera.ymax <= 300)
-      //     camera.ZoomOut();
-      // }
       else if (e.Key == Key.Q) {
-            ((SegReta)objetoSelecionado).PontosAlterar(new Ponto4D(1+inicio, 0), 0);
-            ((SegReta)objetoSelecionado).PontosAlterar(new Ponto4D(1+inicio, 100), 1);
-            inicio -= 1;
+            ((SegReta)objetoSelecionado).PontosPosicao(0).X--;
+            ((SegReta)objetoSelecionado).PontosPosicao(1).X--;
+            // inicio -= 1;
       }
       else if (e.Key == Key.W) {
-            ((SegReta)objetoSelecionado).PontosAlterar(new Ponto4D(-1-inicio, 0), 0);
-            ((SegReta)objetoSelecionado).PontosAlterar(new Ponto4D(-1-inicio, 100), 1);
-            inicio -= 1;
+            ((SegReta)objetoSelecionado).PontosPosicao(0).X++;
+            ((SegReta)objetoSelecionado).PontosPosicao(1).X++;
+      }
+      // teclas Z (diminuir) e X (aumentar) para girar (ângulo) do Sr. Palito
+      // Falta ver o giro
+      else if (e.Key == Key.Z) {
+        if (((SegReta)objetoSelecionado).PontosUltimo().Y < 100) {
+          ((SegReta)objetoSelecionado).PontosUltimo().Y++;
+        }
+      }
+      else if (e.Key == Key.X) {
+        if (((SegReta)objetoSelecionado).PontosUltimo().Y < -100) {
+          ((SegReta)objetoSelecionado).PontosUltimo().Y--;
+        }
+      }
+      // A (diminuir) e S (aumentar)
+      else if (e.Key == Key.A) {
+        ((SegReta)objetoSelecionado).PontosUltimo().X++;
+        if (((SegReta)objetoSelecionado).PontosUltimo().Y < 100) {
+          ((SegReta)objetoSelecionado).PontosUltimo().Y++;
+        }
+      }
+      else if (e.Key == Key.S) {
+        ((SegReta)objetoSelecionado).PontosUltimo().X--;
+        if (((SegReta)objetoSelecionado).PontosUltimo().Y < 100) {
+          ((SegReta)objetoSelecionado).PontosUltimo().Y--;
+        }
       }
 
       // else
