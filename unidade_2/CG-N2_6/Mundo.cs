@@ -163,10 +163,10 @@ namespace gcgcg
        if (e.Key == Key.H) {
          Utilitario.AjudaTeclado();
        }
-       else if (e.Key == Key.M && spline != null) {
+       else if (e.Key == Key.Plus && spline != null) {
           spline.quantidadePontos++;
        }
-       else if (e.Key == Key.N && spline != null)
+       else if (e.Key == Key.Minus && spline != null)
             {
                 if (spline.quantidadePontos > 1)
                     spline.quantidadePontos--;

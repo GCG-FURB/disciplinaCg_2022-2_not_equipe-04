@@ -7,11 +7,10 @@ using System.Text;
 
 namespace gcgcg
 {
-    internal class Ponto : ObjetoGeometria{
+    internal class Ponto : ObjetoGeometria {
 
-    private Cor objetoCor = new Cor(0, 0, 0, 0);
+        private Cor objetoCor = new Cor(0, 0, 0, 0);
 
-    public Cor ObjetoCor { get => objetoCor; set => objetoCor = value; }
         public Ponto4D ponto { get; set; }
         
 
