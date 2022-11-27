@@ -120,7 +120,6 @@ namespace gcgcg
       else if (e.Key == Key.Q) {
             ((SegReta)objetoSelecionado).PontosPosicao(0).X--;
             ((SegReta)objetoSelecionado).PontosPosicao(1).X--;
-            // inicio -= 1;
       }
       else if (e.Key == Key.W) {
             ((SegReta)objetoSelecionado).PontosPosicao(0).X++;
@@ -130,34 +129,36 @@ namespace gcgcg
       // Falta ver o giro
       else if (e.Key == Key.Z) {
         if (((SegReta)objetoSelecionado).PontosUltimo().Y < 100) {
-          ((SegReta)objetoSelecionado).PontosUltimo().Y++;
+            ((SegReta)objetoSelecionado).PontosUltimo().Y++;
+            if (((SegReta)objetoSelecionado).PontosUltimo().X <= 100 && ((SegReta)objetoSelecionado).PontosUltimo().X > 0) {
+              ((SegReta)objetoSelecionado).PontosUltimo().X--;
+            }
+        }
+        else if (((SegReta)objetoSelecionado).PontosUltimo().Y >= 100 && ((SegReta)objetoSelecionado).PontosUltimo().Y <= 200 && ((SegReta)objetoSelecionado).PontosUltimo().X < 200) {
+          if (((SegReta)objetoSelecionado).PontosUltimo().Y < 200) {
+            ((SegReta)objetoSelecionado).PontosUltimo().Y++;
+          }
+          else if (((SegReta)objetoSelecionado).PontosUltimo().X < 200) {
+            ((SegReta)objetoSelecionado).PontosUltimo().X++;
+          }
+        } else if (((SegReta)objetoSelecionado).PontosUltimo().Y < 200 && ((SegReta)objetoSelecionado).PontosUltimo().X == 200) {
+          ((SegReta)objetoSelecionado).PontosUltimo().Y--;
         }
       }
       else if (e.Key == Key.X) {
-        if (((SegReta)objetoSelecionado).PontosUltimo().Y < -100) {
-          ((SegReta)objetoSelecionado).PontosUltimo().Y--;
+        if (((SegReta)objetoSelecionado).PontosUltimo().X < 100) {
+            ((SegReta)objetoSelecionado).PontosUltimo().X++;
         }
       }
       // A (diminuir) e S (aumentar)
       else if (e.Key == Key.A) {
         ((SegReta)objetoSelecionado).PontosUltimo().X++;
-        if (((SegReta)objetoSelecionado).PontosUltimo().Y < 100) {
-          ((SegReta)objetoSelecionado).PontosUltimo().Y++;
-        }
+        ((SegReta)objetoSelecionado).PontosUltimo().Y++;
       }
       else if (e.Key == Key.S) {
         ((SegReta)objetoSelecionado).PontosUltimo().X--;
-        if (((SegReta)objetoSelecionado).PontosUltimo().Y < 100) {
-          ((SegReta)objetoSelecionado).PontosUltimo().Y--;
-        }
+        ((SegReta)objetoSelecionado).PontosUltimo().Y--;
       }
-
-      // else
-      //   Exit();
-//       if (e.Key == Key.H)
-//         Utilitario.AjudaTeclado();
-//       else if (e.Key == Key.Escape)
-//         Exit();
       else if (e.Key == Key.P)
       {
         Console.WriteLine("--- Objetos / Pontos: ");
