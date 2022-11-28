@@ -97,14 +97,13 @@ namespace gcgcg
             }
             else if (e.Key == Key.Enter)
             {
-                objetosLista.Remove(rastroPontoInicialDoPoligno);
+                //objetosLista.Remove(rastroPontoInicialDoPoligno);
 
                 if (objetoNovo != null)
                 {
                     objetoNovo.PontosRemoverUltimo();   
                     objetoNovo.PontosAdicionar(objetoNovo.pontosLista[0]);
                     objetoSelecionado = objetoNovo;
-
 
                     objetoNovo = null;
                 }
@@ -113,6 +112,12 @@ namespace gcgcg
             else if (e.Key == Key.Space)
             {
                 DesenhaPoligono();
+            }
+            else if (e.Key == Key.C) {
+                if (objetoSelecionado != null) {
+                    objetosLista.Remove(objetoSelecionado);
+                    objetoSelecionado = null;
+                }
             }
         }
 
@@ -132,10 +137,10 @@ namespace gcgcg
                 rastroPontoInicialDoPoligno = new SegReta(objetoId, null, new Ponto4D(mouseX, mouseY), rastroPoligono);
                 objetoNovo.PontosAdicionar(rastroPoligono);
 
-                if (null == objetoSelecionado)
+                if (objetoSelecionado == null)
                     objetosLista.Add(objetoNovo);
 
-                objetosLista.Add(rastroPontoInicialDoPoligno);
+                // objetosLista.Add(rastroPontoInicialDoPoligno);
             }
             else
             {
@@ -172,10 +177,10 @@ namespace gcgcg
                 MoveVertice();
                 IsMovingVertice = true;
             }
-            else if (!IsMovingVertice)
-            {
-                DesenhaPoligono();
-            }
+            // else if (!IsMovingVertice)
+            // {
+            //     DesenhaPoligono();
+            // }
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
