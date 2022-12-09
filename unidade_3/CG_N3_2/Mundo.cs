@@ -113,14 +113,13 @@ namespace gcgcg
             }
             else if (e.Key == Key.Enter)
             {
-                objetosLista.Remove(rastroPontoInicialDoPoligno);
+                //objetosLista.Remove(rastroPontoInicialDoPoligno);
 
                 if (objetoNovo != null)
                 {
                     objetoNovo.PontosRemoverUltimo();  
                     objetoNovo.PontosAdicionar(objetoNovo.pontosLista[0]);
                     objetoSelecionado = objetoNovo;
-
 
                     objetoNovo = null;
                 }
@@ -130,6 +129,7 @@ namespace gcgcg
             {
                 DesenhaNovoPoligonoComMouseOuEspaco();
             }
+<<<<<<< HEAD
             else if (objetoSelecionado != null)
             {
                 if (e.Key == Key.M)
@@ -195,6 +195,14 @@ namespace gcgcg
             }
             else
                 Console.WriteLine("Não implementado.");
+=======
+            else if (e.Key == Key.C) {
+                if (objetoSelecionado != null) {
+                    objetosLista.Remove(objetoSelecionado);
+                    objetoSelecionado = null;
+                }
+            }
+>>>>>>> 04173a5ff1a01dc50fbc41371e11e261517a2f22
         }
 
         private void DesenhaNovoPoligonoComMouseOuEspaco()
@@ -213,10 +221,10 @@ namespace gcgcg
                 rastroPontoInicialDoPoligno = new SegReta($"segReto_{objetoId}", null, new Ponto4D(mouseX, mouseY), rastroPoligono);
                 objetoNovo.PontosAdicionar(rastroPoligono);
 
-                if (null == objetoSelecionado)
+                if (objetoSelecionado == null)
                     objetosLista.Add(objetoNovo);
 
-                objetosLista.Add(rastroPontoInicialDoPoligno);
+                // objetosLista.Add(rastroPontoInicialDoPoligno);
             }
             else
             {
@@ -251,10 +259,17 @@ namespace gcgcg
                 MovimentaVerticeDoObjetoMaisProximo();
                 estahMudandoVertice = true;
             }
+<<<<<<< HEAD
             else if (!estahMudandoVertice)
             {
                 DesenhaNovoPoligonoComMouseOuEspaco();
             }
+=======
+            // else if (!IsMovingVertice)
+            // {
+            //     DesenhaPoligono();
+            // }
+>>>>>>> 04173a5ff1a01dc50fbc41371e11e261517a2f22
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
