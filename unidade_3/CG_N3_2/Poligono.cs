@@ -1,3 +1,6 @@
+/**
+  Autor: Dalton Solano dos Reis
+**/
 
 using OpenTK.Graphics.OpenGL;
 using CG_Biblioteca;
@@ -6,8 +9,12 @@ namespace gcgcg
 {
     internal class Poligono : ObjetoGeometria
     {
-        public Poligono(char rotulo, Objeto paiRef) : base(rotulo, paiRef)
+        public Poligono(string rotulo, Objeto paiRef) : base(rotulo, paiRef)
         {
+                        //PrimitivaTipo = PrimitiveType.Lines;
+            //PrimitivaTipo = PrimitiveType.LinesAdjacency;
+            //PrimitivaTipo = PrimitiveType.LinesAdjacencyArb;
+            //PrimitivaTipo = PrimitiveType.LinesAdjacencyExt;
             PrimitivaTipo = PrimitiveType.LineStrip;
         }
 
@@ -21,6 +28,7 @@ namespace gcgcg
             GL.End();
         }
 
+        //TODO: melhorar para exibir não só a lista de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
         public override string ToString()
         {
             string retorno;

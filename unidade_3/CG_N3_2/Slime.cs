@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using CG_Biblioteca;
 using gcgcg;
 using OpenTK.Graphics.OpenGL;
 
-namespace gcgcg
+namespace CG_N2
 {
-    internal class Rastro : ObjetoGeometria
+    internal class Slime : ObjetoGeometria
     {
         private Ponto4D ponto1 { get; set; }
         private Ponto4D ponto2 { get; set; }
         private Ponto4D ponto3 { get; set; }
         private Ponto4D ponto4 { get; set; }
 
-        public Rastro(char rotulo, Objeto paiRef, Ponto4D ponto1, Ponto4D ponto2, Ponto4D ponto3, Ponto4D ponto4) : base(rotulo, paiRef)
+        public Slime(string rotulo, Objeto paiRef, Ponto4D ponto1, Ponto4D ponto2, Ponto4D ponto3, Ponto4D ponto4) : base(rotulo, paiRef)
         {
             PrimitivaTipo = PrimitiveType.LineStrip;
             this.ponto1 = ponto1;

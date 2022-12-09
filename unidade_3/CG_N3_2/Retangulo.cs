@@ -2,10 +2,6 @@
   Autor: Dalton Solano dos Reis
 **/
 
-#define CG_Debug
-#define CG_OpenGL
-// #define CG_DirectX
-
 using OpenTK.Graphics.OpenGL;
 using CG_Biblioteca;
 
@@ -13,7 +9,7 @@ namespace gcgcg
 {
   internal class Retangulo : ObjetoGeometria
   {
-    public Retangulo(char rotulo, Objeto paiRef, Ponto4D ptoInfEsq, Ponto4D ptoSupDir) : base(rotulo, paiRef)
+    public Retangulo(string rotulo, Objeto paiRef, Ponto4D ptoInfEsq, Ponto4D ptoSupDir) : base(rotulo, paiRef)
     {
       base.PontosAdicionar(ptoInfEsq);
       base.PontosAdicionar(new Ponto4D(ptoSupDir.X, ptoInfEsq.Y));
@@ -23,22 +19,14 @@ namespace gcgcg
 
     protected override void DesenharObjeto()
     {
-#if CG_OpenGL && !CG_DirectX
       GL.Begin(base.PrimitivaTipo);
       foreach (Ponto4D pto in pontosLista)
       {
         GL.Vertex2(pto.X, pto.Y);
       }
       GL.End();
-#elif CG_DirectX && !CG_OpenGL
-    Console.WriteLine(" .. Coloque aqui o seu código em DirectX");
-#elif (CG_DirectX && CG_OpenGL) || (!CG_DirectX && !CG_OpenGL)
-    Console.WriteLine(" .. ERRO de Render - escolha OpenGL ou DirectX !!");
-#endif
     }
-    
-    //TODO: melhorar para exibir não só a lista de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
-#if CG_Debug
+    //TODO: melhorar para exibir não só a lsita de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
     public override string ToString()
     {
       string retorno;
@@ -49,7 +37,6 @@ namespace gcgcg
       }
       return (retorno);
     }
-#endif
 
   }
 }

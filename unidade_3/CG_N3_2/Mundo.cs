@@ -1,9 +1,5 @@
-﻿/**
-  Autor: Dalton Solano dos Reis
-**/
-
+﻿
 #define CG_Gizmo
-// #define CG_Privado
 
 using System;
 using OpenTK;
@@ -11,6 +7,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using OpenTK.Input;
 using CG_Biblioteca;
+using CG_N2;
 using Accord.Math;
 
 
@@ -32,13 +29,15 @@ namespace gcgcg
         private CameraOrtho camera = new CameraOrtho();
         protected List<Objeto> objetosLista = new List<Objeto>();
         private ObjetoGeometria objetoSelecionado = null;
-        private char objetoId;
+        private string objetoId = "0";
         private bool bBoxDesenhar = false;
         int mouseX, mouseY;
+        //private bool mouseMoverPto = false;
         private Poligono objetoNovo = null;
-        private bool IsMovingVertice = false;
+        private bool estahMudandoVertice = false;
         private Ponto4D pontoMaisProximo = null;
         private Ponto4D rastroPoligono;
+        private Ponto4D backupUltimoPontoPoligonoSelecionado = null;
         private SegReta rastroPontoInicialDoPoligno = null;
 
         protected override void OnLoad(EventArgs e)
@@ -46,12 +45,12 @@ namespace gcgcg
             base.OnLoad(e);
             camera.xmin = 0; camera.xmax = 600; camera.ymin = 0; camera.ymax = 600;
 
-            SegReta segReta1 = new SegReta('x', null, new Ponto4D(300, 300), new Ponto4D(500, 300))
+            SegReta segReta1 = new SegReta("Reta X", null, new Ponto4D(300, 300), new Ponto4D(500, 300))
             {
                 ObjetoCor = new Cor(255, 0, 0)
             };
 
-            SegReta segReta2 = new SegReta('y', null, new Ponto4D(300, 300), new Ponto4D(300, 500))
+            SegReta segReta2 = new SegReta("Reta Y", null, new Ponto4D(300, 300), new Ponto4D(300, 500))
             {
                 ObjetoCor = new Cor(0, 255, 0)
             };
@@ -95,13 +94,30 @@ namespace gcgcg
                     Console.WriteLine(objetosLista[i]);
                 }
             }
+            else if (e.Key == Key.O)
+                bBoxDesenhar = !bBoxDesenhar;
+            else if (e.Key == Key.A)
+                objetoSelecionado = ScanLine();
+            else if (e.Key == Key.V)
+            {
+                estahMudandoVertice = true;
+            }
+            else if (e.Key == Key.D)
+            {
+                MovimentaVerticeDoObjetoMaisProximo();
+                if (pontoMaisProximo != null)
+                {
+                    objetoSelecionado.pontosLista.Remove(pontoMaisProximo);
+                    estahMudandoVertice = false;
+                }
+            }
             else if (e.Key == Key.Enter)
             {
                 objetosLista.Remove(rastroPontoInicialDoPoligno);
 
                 if (objetoNovo != null)
                 {
-                    objetoNovo.PontosRemoverUltimo();   
+                    objetoNovo.PontosRemoverUltimo();  
                     objetoNovo.PontosAdicionar(objetoNovo.pontosLista[0]);
                     objetoSelecionado = objetoNovo;
 
@@ -112,13 +128,78 @@ namespace gcgcg
             }
             else if (e.Key == Key.Space)
             {
-                DesenhaPoligono();
+                DesenhaNovoPoligonoComMouseOuEspaco();
             }
+            else if (objetoSelecionado != null)
+            {
+                if (e.Key == Key.M)
+                    Console.WriteLine(objetoSelecionado.Matriz);
+                else if (e.Key == Key.P)
+                    Console.WriteLine(objetoSelecionado);
+                else if (e.Key == Key.C)
+                {
+                    if (objetoSelecionado.ObjetoPai != null)
+                        objetoSelecionado.ObjetoPai.FilhoRemover(objetoSelecionado);
+                    else
+                        objetosLista.Remove(objetoSelecionado);
+
+                    objetoSelecionado = null;
+                }
+                else if (e.Key == Key.R)
+                    objetoSelecionado.ObjetoCor = new Cor(255, 0, 0, 0);
+                else if (e.Key == Key.G)
+                    objetoSelecionado.ObjetoCor = new Cor(0, 255, 0, 0);
+                else if (e.Key == Key.B)
+                    objetoSelecionado.ObjetoCor = new Cor(0, 0, 255, 0);
+                else if (e.Key == Key.S)
+                {
+                    if (backupUltimoPontoPoligonoSelecionado == null)
+                    {
+                        backupUltimoPontoPoligonoSelecionado = objetoSelecionado.PontosUltimo();
+                        objetoSelecionado.PontosRemoverUltimo();
+                    }
+                    else
+                    {
+                        objetoSelecionado.PontosAdicionar(backupUltimoPontoPoligonoSelecionado);
+                        backupUltimoPontoPoligonoSelecionado = null;
+                    }
+                }
+                else if (e.Key == Key.Left)
+                    objetoSelecionado.TranslacaoXYZ(-10, 0, 0);
+                else if (e.Key == Key.Right)
+                    objetoSelecionado.TranslacaoXYZ(10, 0, 0);
+                else if (e.Key == Key.Up)
+                    objetoSelecionado.TranslacaoXYZ(0, 10, 0);
+                else if (e.Key == Key.Down)
+                    objetoSelecionado.TranslacaoXYZ(0, -10, 0);
+                else if (e.Key == Key.PageUp)
+                    objetoSelecionado.EscalaXYZ(2, 2, 2);
+                else if (e.Key == Key.PageDown)
+                    objetoSelecionado.EscalaXYZ(0.5, 0.5, 0.5);
+                else if (e.Key == Key.Home)
+                    objetoSelecionado.EscalaXYZBBox(0.5, 0.5, 0.5);
+                else if (e.Key == Key.End)
+                    objetoSelecionado.EscalaXYZBBox(2, 2, 2);
+                else if (e.Key == Key.Number1)
+                    objetoSelecionado.Rotacao(10);
+                else if (e.Key == Key.Number2)
+                    objetoSelecionado.Rotacao(-10);
+                else if (e.Key == Key.Number3)
+                    objetoSelecionado.RotacaoZBBox(10);
+                else if (e.Key == Key.Number4)
+                    objetoSelecionado.RotacaoZBBox(-10);
+                else if (e.Key == Key.Number9)
+                    objetoSelecionado = null;                 
+                else
+                    Console.WriteLine(" Não implementado");
+            }
+            else
+                Console.WriteLine("Não implementado.");
         }
 
-        private void DesenhaPoligono()
+        private void DesenhaNovoPoligonoComMouseOuEspaco()
         {
-            if (IsMovingVertice)
+            if (estahMudandoVertice)
                 return;
 
             if (objetoNovo == null)
@@ -129,7 +210,7 @@ namespace gcgcg
 
                 objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
                 rastroPoligono = new Ponto4D(mouseX, mouseY); 
-                rastroPontoInicialDoPoligno = new SegReta(objetoId, null, new Ponto4D(mouseX, mouseY), rastroPoligono);
+                rastroPontoInicialDoPoligno = new SegReta($"segReto_{objetoId}", null, new Ponto4D(mouseX, mouseY), rastroPoligono);
                 objetoNovo.PontosAdicionar(rastroPoligono);
 
                 if (null == objetoSelecionado)
@@ -144,8 +225,6 @@ namespace gcgcg
                 objetoNovo.PontosAdicionar(rastroPoligono);
             }
         }
-
-    
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
             mouseX = e.Position.X; mouseY = 600 - e.Position.Y; 
@@ -156,9 +235,9 @@ namespace gcgcg
                 rastroPoligono.Y = mouseY;
             }
 
-            if (IsMovingVertice)
+            if (estahMudandoVertice)
             {
-                MoveVertice();
+                MovimentaVerticeDoObjetoMaisProximo();
             }
         }
 
@@ -167,26 +246,26 @@ namespace gcgcg
             mouseX = e.Position.X; mouseY = 600 - e.Position.Y; 
 
 
-            if (objetoSelecionado != null && IsMovingVertice)
+            if (objetoSelecionado != null && estahMudandoVertice)
             {
-                MoveVertice();
-                IsMovingVertice = true;
+                MovimentaVerticeDoObjetoMaisProximo();
+                estahMudandoVertice = true;
             }
-            else if (!IsMovingVertice)
+            else if (!estahMudandoVertice)
             {
-                DesenhaPoligono();
+                DesenhaNovoPoligonoComMouseOuEspaco();
             }
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
-            IsMovingVertice = false;
+            estahMudandoVertice = false;
             pontoMaisProximo = null;
         }
 
-        private void MoveVertice()
+        private void MovimentaVerticeDoObjetoMaisProximo()
         {
-            double distanciaMaisProxima = 999999;
+            double distanciaMaisProxima = 100000000;
 
             foreach (var ponto in objetoSelecionado.pontosLista)
             {
@@ -199,7 +278,7 @@ namespace gcgcg
                 }
             }
 
-            if (IsMovingVertice)
+            if (estahMudandoVertice)
             {
                 pontoMaisProximo.X = mouseX;
                 pontoMaisProximo.Y = mouseY;
@@ -207,30 +286,62 @@ namespace gcgcg
             }
         }
 
+        private Poligono ScanLine()
+        {
+            Poligono plg = null;
+
+            List<Objeto> objetos = new List<Objeto>();
+
+
+            objetosLista.ForEach(obj => objetos.AddRange(RetornarFilhos(obj)));
+
+            foreach (Poligono objeto in objetos)
+            {
+                long qtdXises = 0;
+
+                for (int i = 0; i < objeto.pontosLista.Count - 1; i++)
+                {
+                    Ponto4D p1 = objeto.pontosLista[i];
+                    Ponto4D p2 = objeto.pontosLista[i + 1];
+
+                    var teUm = (mouseY - p1.Y) / (p2.Y - p1.Y);
+                    var xisUm = p1.X + (p2.X - p1.X) * teUm;
+
+                    if (teUm <= 1 && teUm > 0 && xisUm >= mouseX)
+                        qtdXises++;
+                }
+
+                if (qtdXises % 2 != 0)
+                    plg = objeto;
+            }
+
+            return plg;
+        }
+
+        private List<Objeto> RetornarFilhos(Objeto objeto)
+        {
+            List<Objeto> filhos = new List<Objeto>();
+
+            foreach (var obj in objeto.objetosLista)
+                filhos.AddRange(RetornarFilhos(obj));
+
+            filhos.Add(objeto);
+
+            return filhos;
+        }
+
 #if CG_Gizmo
         private void Sru3D()
         {
             GL.LineWidth(1);
             GL.Begin(PrimitiveType.Lines);
-            // GL.Color3(1.0f,0.0f,0.0f);
             GL.Color3(Convert.ToByte(255), Convert.ToByte(0), Convert.ToByte(0));
             GL.Vertex3(0, 0, 0); GL.Vertex3(200, 0, 0);
-            // GL.Color3(0.0f,1.0f,0.0f);
             GL.Color3(Convert.ToByte(0), Convert.ToByte(255), Convert.ToByte(0));
             GL.Vertex3(0, 0, 0); GL.Vertex3(0, 200, 0);
-            // GL.Color3(0.0f,0.0f,1.0f);
             GL.Color3(Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(255));
             GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 200);
             GL.End();
-
-            //GL.LineWidth(1);
-            //GL.Begin(PrimitiveType.Lines);
-            //GL.Color3(255, 0, 0);
-            //GL.Vertex3(0, 0, 0); GL.Vertex3(200, 0, 0);
-            //GL.Color3(0, 255, 0);
-            //GL.Vertex3(0, 0, 0); GL.Vertex3(0, 200, 0);
-            //GL.Color3(0, 0, 255);
-            //GL.End();
         }
 #endif
     }
@@ -239,7 +350,7 @@ namespace gcgcg
         static void Main(string[] args)
         {
             Mundo window = Mundo.GetInstance(600, 600);
-            window.Title = "CG_N2";
+            window.Title = "CG_N3";
             window.Run(1.0 / 60.0);
         }
     }

@@ -1,27 +1,30 @@
-using CG_Biblioteca;
+﻿using CG_Biblioteca;
+using gcgcg;
 using OpenTK.Graphics.OpenGL;
 
-namespace gcgcg {
-    class SegReta : ObjetoGeometria {
+namespace CG_N2
+{
+    internal class SegReta : ObjetoGeometria
+    {
+        private Ponto4D pontoCentral { get; set; }
+        private Ponto4D pontoFinal { get; set; }
 
-        public SegReta(char rotulo, Objeto paiRef, Ponto4D ptoIni, Ponto4D ptoFim) : base(rotulo, paiRef) {
-            base.PontosAdicionar(ptoIni);
-            base.PontosAdicionar(ptoFim);
+        public SegReta(string rotulo, Objeto paiRef, Ponto4D pontoCentral, Ponto4D pontoFinal) : base(rotulo, paiRef)
+        {
+            PrimitivaTipo = PrimitiveType.Lines;
+            this.pontoCentral = pontoCentral;
+            this.pontoFinal = pontoFinal;
         }
 
         protected override void DesenharObjeto()
         {
-            GL.Begin(base.PrimitivaTipo);
-            foreach (Ponto4D pto in pontosLista)
+            GL.Color3(ObjetoCor.CorR, ObjetoCor.CorG, ObjetoCor.CorB);
+            GL.Begin(PrimitivaTipo);
             {
-                GL.Vertex2(pto.X, pto.Y);           
+                GL.Vertex2(pontoCentral.X, pontoCentral.Y);
+                GL.Vertex2(pontoFinal.X, pontoFinal.Y);
             }
             GL.End();
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
         }
     }
 }
